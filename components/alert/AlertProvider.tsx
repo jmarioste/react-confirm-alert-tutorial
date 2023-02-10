@@ -6,6 +6,18 @@ import React, {
   useState,
 } from "react";
 
+type AlertOptions = {
+  title: ReactNode;
+  confirmMessage: ReactNode;
+  onConfirm(): Promise<void> | void;
+};
+const AlertContext = createContext<{
+  showAlert(opts: AlertOptions): void;
+} | null>(null);
+
+/**
+ * Any AlertDialog component used with AlertProvider should use these props
+ */
 export type AlertComponentProps = {
   open: boolean;
   message: ReactNode;
@@ -14,20 +26,19 @@ export type AlertComponentProps = {
   onConfirm(): Promise<void> | void;
   confirming?: boolean;
 };
+
+/**
+ * Props for AlertProvider.
+ * AlertComponent is a React.ComponentType with AlertComponentProps.
+ * This is for type safety, if you pass a different component it will result in an error.
+ */
 export type AlertProviderProps = {
   AlertComponent: React.ComponentType<AlertComponentProps>;
 } & PropsWithChildren;
 
-type AlertOptions = {
-  title: ReactNode;
-  confirmMessage: ReactNode;
-  onConfirm(): Promise<void> | void;
-};
-const AlertContext = createContext({
-  showAlert(opts?: AlertOptions) {},
-  hideAlert() {},
-});
-
+/**
+ * Alert provider definition
+ */
 const AlertProvider = ({ AlertComponent, children }: AlertProviderProps) => {
   const [shown, setShown] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -58,7 +69,7 @@ const AlertProvider = ({ AlertComponent, children }: AlertProviderProps) => {
     setShown(false);
   };
   return (
-    <AlertContext.Provider value={{ showAlert, hideAlert }}>
+    <AlertContext.Provider value={{ showAlert }}>
       <AlertComponent
         open={shown}
         onClose={hideAlert}
