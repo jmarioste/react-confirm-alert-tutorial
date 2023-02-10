@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@headlessui/react": "^1.7.10",
     "autoprefixer": "^10.4.13",
     "next": "13.1.6",
     "postcss": "^8.4.21",
